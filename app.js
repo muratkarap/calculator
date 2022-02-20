@@ -74,7 +74,7 @@ const numbersArray=[number0,number1,number2,number3,number4,number5,
        const previous=parseFloat(previousOperand);
        const current=parseFloat(currentOperand);
        if(!operation) return;
-       if(isNaN(previous)) || isNaN(current) return;
+       if(isNaN(previous) || isNaN(current)) return;
         switch (operation) {
             case "+":
                 computation= previous + current;
