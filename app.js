@@ -27,6 +27,7 @@ const number9=document.querySelector(".number-9");
 let previousOperand="";
 let currentOperand="";
 let operation=undefined;
+let temporaryOperand="";
 
 const numbersArray=[number0,number1,number2,number3,number4,number5,
     number6,number7,number8,number9]
@@ -43,13 +44,27 @@ const numbersArray=[number0,number1,number2,number3,number4,number5,
         currentElement.innerHTML=currentOperand;
     }
     function appendNumber(number){
+        if(number==="." && currentOperand.includes(".")) return;
+        if(number===0 && currentOperand==="0") return;
+        if(currentOperand.length>7) return;
+
+        
         currentOperand=currentOperand.toString()+ number.toString();
         DisplayNumbers();
     }
 
     function ChooseOperation(selectedOperation){
+        if(temporaryOperand){
+            previousOperand=temporaryOperand.toString();
+            currentOperand="";
+            temporaryOperand="";
+            operation=selectedOperation;
+            DisplayNumbers;
+            return;
+        }
         operation=selectedOperation;
         previousOperand=currentOperand;
+        acButton.innerHTML="AC";
         currentOperand="";
         DisplayNumbers();
     }
@@ -58,6 +73,8 @@ const numbersArray=[number0,number1,number2,number3,number4,number5,
        let computation;
        const previous=parseFloat(previousOperand);
        const current=parseFloat(currentOperand);
+       if(!operation) return;
+       if(isNaN(previous)) || isNaN(current) return;
         switch (operation) {
             case "+":
                 computation= previous + current;
@@ -78,19 +95,39 @@ const numbersArray=[number0,number1,number2,number3,number4,number5,
             default:
                 break;
         }
+
+        if (isNaN(computation)) return;
+
     currentOperand=computation;
     previousOperand="";
     operation=undefined;
+    acButton.innerHTML="C";
     DisplayNumbers();
+    temporaryOperand=currentOperand;
+    currentOperand="";
     }
  function Allclear(){
-    previousOperand="";
-    currentOperand="";
-    operation=undefined;
+     if(!previousOperand){
+         currentOperand=currentOperand.slice(0,currentOperand.length -1)
+     }else{
+        previousOperand="";
+        currentOperand="";
+        operation=undefined;
+        acButton.innerHTML="C";
+     }
+   
     DisplayNumbers();
  }
 
+ function PlusMinus(){
+     currentOperand=currentOperand*-1;
+     DisplayNumbers();
+ }
 
+ function Percent(){
+     currentOperand=currentOperand/100;
+     DisplayNumbers();
+     }
 //events
 
 additionButton.addEventListener("click", ()=>{
@@ -113,10 +150,10 @@ acButton.addEventListener("click",()=>{
 Allclear();
 })
 pmButton.addEventListener("click",()=>{
-    
+    PlusMinus();
 })
 percentButton.addEventListener("click",()=>{
-    
+    Percent();
 })
 
 
@@ -125,8 +162,11 @@ for (let i=0; i<numbersArray.length; i++){
     const number=numbersArray[i];
     number.addEventListener("click",()=>{
         appendNumber(i);
-        
+        temporaryOperand="";
     })
 
-
 }
+
+decimalButton.addEventListener("click",()=>{
+    appendNumber(".");
+})
